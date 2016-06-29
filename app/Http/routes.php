@@ -11,6 +11,29 @@
 |
 */
 
+
 Route::get('/', function () {
     return view('welcome');
+});
+
+Route::post('/register', "WeKastController@register");
+
+Route::post('/auth', function () {
+    return "auth";
+});
+
+Route::post('/reset', function () {
+    return "password";
+});
+
+Route::get('/list', function () {
+    return "list";
+});
+
+Route::post('/upload', function () {
+    return "upload";
+});
+
+Route::get('/download/{id}', function ($id) {
+    return "download " . $id;
 });
