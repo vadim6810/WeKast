@@ -16,6 +16,7 @@ class ModelUser extends Migration
     {
         Schema::create(self::TABLE_NAME, function(Blueprint $table)
         {
+            $table->engine = 'MyISAM';
             $table->increments('id');
             $table->string('login')->unique();
             $table->string('email')->unique();

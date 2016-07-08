@@ -16,6 +16,7 @@ class ModelPresentation extends Migration
     {
         Schema::create(self::TABLE_NAME, function(Blueprint $table)
         {
+            $table->engine = 'MyISAM';
             $table->increments('id');
             $table->unsignedInteger('user_id');
             $table->foreign('user_id')->references('id')->on('user');
