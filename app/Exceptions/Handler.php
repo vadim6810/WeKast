@@ -47,7 +47,7 @@ class Handler extends ExceptionHandler
     {
         if ($e instanceof WeKastAPIException) {
             return response()->json([
-                'err' => $e->message(),
+                'err' => $e->getMessage(),
                 'num' => $e->getCode()
             ]);
         } else {

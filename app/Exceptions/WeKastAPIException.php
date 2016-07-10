@@ -32,22 +32,13 @@ class WeKastAPIException extends \Exception
      */
     public function __construct($code, Exception $previous = null)
     {
-        $message = isset(self::$errors[$code]) ? self::$errors[$code] : self::$errors[0];
+        if ($code && isset(self::$errors[$code])) {
+            $message = self::$errors[$code];
+        } else {
+            $debug = env('APP_DEBUG', false);
+            $message = self::$errors[0] . ($debug ? ': ' . $previous->getMessage() : '');
+        }
         parent::__construct($message, $code, $previous);
     }
-
-    /**
-     * GetMessage wrapper
-     * @return string
-     */
-    public function message()
-    {
-        if (($this->getCode() === 0) && $this->getPrevious()) {
-            return $this->getMessage() . ': ' . $this->getPrevious()->getMessage();
-        } else {
-            return $this->getMessage();
-        }
-    }
-
 
 }
