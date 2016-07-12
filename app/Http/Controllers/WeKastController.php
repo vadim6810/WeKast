@@ -98,7 +98,7 @@ class WeKastController extends Controller
     }
 
     public function upload(Request $request) {
-        $user = self::auth($request->login, $request->pass);
+        $user = self::auth($request->login, $request->password);
 
         $file = $request->file('file');
         if ($file->isValid()) {

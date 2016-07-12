@@ -66,7 +66,7 @@
             <label for="phone">Login:</label>
             <input name="login" id="phone" type="text" class="form-control">
             <label for="password">Password:</label>
-            <input name="pass" id="password" type="text" class="form-control">
+            <input name="password" id="password" type="text" class="form-control">
             <label for="file">Password:</label>
             <input name="file" id="file" type="file" class="form-control">
             <button id="auth" class="btn btn-default">Auth</button>
