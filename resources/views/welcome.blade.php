@@ -41,6 +41,12 @@
             padding: 20px;
             display: inline-block;
         }
+
+        #output {
+            width: 500px;
+            height: 400px;
+            overflow: scroll;
+        }
     </style>
 </head>
 <body>
@@ -55,12 +61,14 @@
             <input id="email" type="text" class="form-control">
             <button id="register" class="btn btn-default">Register</button>
         </form>
-        <form  class="form-group">
-            <h3>Auth Tester</h3>
+        <form id="upload" class="form-group" method="post" enctype="multipart/form-data">
+            <h3>Upload Tester</h3>
             <label for="phone">Login:</label>
-            <input id="phone" type="text" class="form-control">
+            <input name="login" id="phone" type="text" class="form-control">
             <label for="password">Password:</label>
-            <input id="password" type="text" class="form-control">
+            <input name="pass" id="password" type="text" class="form-control">
+            <label for="file">Password:</label>
+            <input name="file" id="file" type="file" class="form-control">
             <button id="auth" class="btn btn-default">Auth</button>
         </form>
         <div id="output">Output...</div>
@@ -80,7 +88,7 @@
             login: $("#login").val(),
             email: $("#email").val()
         };
-        console.log(d);
+
         $.post("register", d, function (data) {
             output.text(data);
         }, "text");
@@ -88,14 +96,35 @@
     $("#auth").click(function (e) {
         e.preventDefault();
         var output = $("#output");
-        var d = {
-            login: $("#phone").val(),
-            password: $("#password").val()
-        };
-        console.log(d);
-        $.post("auth", d, function (data) {
-            output.text(data);
-        }, "text");
+        var d = new FormData($('#upload')[0]);
+
+        $.ajax({
+            url: 'upload',  //Server script to process data
+            type: 'POST',
+            xhr: function() {  // Custom XMLHttpRequest
+                var myXhr = $.ajaxSettings.xhr();
+                if(myXhr.upload){ // Check if upload property exists
+                    myXhr.upload.addEventListener('progress',function (e) {
+                        console.log(e);
+                    }, false); // For handling the progress of the upload
+                }
+                return myXhr;
+            },
+            //Ajax events
+            success: function (data) {
+                output.text(data);
+            },
+            error: function (data) {
+                output.text(data);
+            },
+            // Form data
+            data: d,
+            //Options to tell jQuery not to process data or worry about content-type.
+            cache: false,
+            contentType: false,
+            processData: false,
+            dataType: text
+        });
     });
 </script>
 </body>

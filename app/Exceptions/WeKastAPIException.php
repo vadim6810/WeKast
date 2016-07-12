@@ -11,11 +11,18 @@ namespace App\Exceptions;
 use Exception;
 
 /**
+ * Ошибки API
+ *
  * Class WeKastAPIException
  * @package App\Exceptions
  */
 class WeKastAPIException extends \Exception
 {
+    /**
+     * Список ошибок API
+     *
+     * @var array
+     */
     static $errors = [
         0 => 'Error',
         1 => 'Duplicate login',
@@ -23,6 +30,8 @@ class WeKastAPIException extends \Exception
         3 => 'Error email format',
         4 => 'Min 6 symbols in login',
         5 => 'User not found with this password',
+        6 => 'Bad password',
+        7 => 'Bad file',
     ];
 
     /**

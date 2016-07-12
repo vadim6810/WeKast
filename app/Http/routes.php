@@ -18,22 +18,10 @@ Route::get('/', function () {
 
 Route::post('/register', "WeKastController@register");
 
-Route::post('/auth', function () {
-    return "auth";
-});
+Route::post('/list', "WeKastController@list");
 
-Route::post('/reset', function () {
-    return "password";
-});
+Route::post('/upload', "WeKastController@upload");
 
-Route::get('/list', function () {
-    return "list";
-});
+Route::post('/download/{id}', "WeKastController@download");
 
-Route::post('/upload', function () {
-    return "upload";
-});
-
-Route::get('/download/{id}', function ($id) {
-    return "download " . $id;
-});
+Route::post('/reset', "WeKastController@password");
