@@ -63,13 +63,21 @@
         </form>
         <form id="upload" class="form-group" method="post" enctype="multipart/form-data">
             <h3>Upload Tester</h3>
-            <label for="phone">Login:</label>
-            <input name="login" id="phone" type="text" class="form-control">
-            <label for="password">Password:</label>
-            <input name="password" id="password" type="text" class="form-control">
+            <label for="upload-login">Login:</label>
+            <input name="login" id="upload-login" type="text" class="form-control">
+            <label for="upload-password">Password:</label>
+            <input name="password" id="upload-password" type="text" class="form-control">
             <label for="file">Password:</label>
             <input name="file" id="file" type="file" class="form-control">
             <button id="auth" class="btn btn-default">Auth</button>
+        </form>
+        <form class="form-group">
+            <h3>List Tester</h3>
+            <label for="list-login">Login:</label>
+            <input id="list-login" type="text" class="form-control">
+            <label for="list-password">Password:</label>
+            <input id="list-password" type="text" class="form-control">
+            <button id="list" class="btn btn-default">Get list</button>
         </form>
         <div id="output">Output...</div>
     </div>
@@ -93,6 +101,21 @@
             output.text(data);
         }, "text");
     });
+
+    $("#list").click(function (e) {
+        e.preventDefault();
+        var output = $("#output");
+        var d = {
+            login: $("#list-login").val(),
+            password: $("#list-password").val()
+        };
+
+        $.post("list", d, function (data) {
+            output.text(data);
+        }, "text");
+    });
+
+
     $("#auth").click(function (e) {
         e.preventDefault();
         var output = $("#output");
@@ -123,7 +146,7 @@
             cache: false,
             contentType: false,
             processData: false,
-            dataType: text
+            dataType: "text"
         });
     });
 </script>

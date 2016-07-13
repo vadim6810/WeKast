@@ -34,7 +34,8 @@ class WeKastController extends Controller
      * @return User
      * @throws WeKastAPIException
      */
-    static public function auth($login, $pass) {
+    static public function auth($login, $pass)
+    {
         try {
             $user = User::where('login', $login)->take(1)->firstOrFail();
             if (!Hash::check($pass, $user->password)) {
@@ -97,7 +98,8 @@ class WeKastController extends Controller
         }
     }
 
-    public function upload(Request $request) {
+    public function upload(Request $request)
+    {
         $user = self::auth($request->login, $request->password);
 
         $file = $request->file('file');
@@ -107,7 +109,7 @@ class WeKastController extends Controller
             $presentation->name = $file->getClientOriginalName();
             $presentation->save();
             Storage::put(
-                'presentations/'.$presentation->id,
+                'presentations/' . $presentation->id,
                 file_get_contents($file->getRealPath())
             );
             return response()->json([
@@ -117,5 +119,12 @@ class WeKastController extends Controller
         } else {
             throw new WeKastAPIException(7);
         }
+    }
+
+    public function presentationsList(Request $request)
+    {
+        $user = self::auth($request->login, $request->password);
+        $presentations = Presentation::byUser($user);
+        return $presentations->toJson();
     }
 }
