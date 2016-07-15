@@ -15,5 +15,6 @@ class VerifyCsrfToken extends BaseVerifier
         "/register",
         "/upload",
         "/list",
+        "/download/*",
     ];
 }

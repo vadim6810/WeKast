@@ -32,6 +32,8 @@ class WeKastAPIException extends \Exception
         5 => 'User not found with this password',
         6 => 'Bad password',
         7 => 'Bad file',
+        8 => 'Presentation not belongs this user',
+        9 => 'Presentation not found',
     ];
 
     /**

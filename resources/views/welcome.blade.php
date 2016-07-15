@@ -79,6 +79,16 @@
             <input id="list-password" type="text" class="form-control">
             <button id="list" class="btn btn-default">Get list</button>
         </form>
+        <form class="form-group">
+            <h3>Download Tester</h3>
+            <label for="download-login">Login:</label>
+            <input id="download-login" type="text" class="form-control">
+            <label for="download-password">Password:</label>
+            <input id="download-password" type="text" class="form-control">
+            <label for="download-id">Password:</label>
+            <input id="download-id" type="text" class="form-control">
+            <button id="download" class="btn btn-default">download</button>
+        </form>
         <div id="output">Output...</div>
     </div>
 </div>
@@ -111,6 +121,19 @@
         };
 
         $.post("list", d, function (data) {
+            output.text(data);
+        }, "text");
+    });
+
+    $("#download").click(function (e) {
+        e.preventDefault();
+        var output = $("#output");
+        var d = {
+            login: $("#download-login").val(),
+            password: $("#download-password").val()
+        };
+        var id = $("#download-id").val();
+        $.post("download/" + id, d, function (data) {
             output.text(data);
         }, "text");
     });

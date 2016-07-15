@@ -17,6 +17,7 @@ use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
  * Контроллер, обрабатывающий запросы к API
@@ -26,6 +27,8 @@ use Illuminate\Support\Facades\Storage;
  */
 class WeKastController extends Controller
 {
+    const PRESENTATIONS_PATH = 'presentations/';
+
     /**
      * Функция проверки логина и пароля
      *
@@ -109,7 +112,7 @@ class WeKastController extends Controller
             $presentation->name = $file->getClientOriginalName();
             $presentation->save();
             Storage::put(
-                'presentations/' . $presentation->id,
+                self::PRESENTATIONS_PATH . $presentation->id,
                 file_get_contents($file->getRealPath())
             );
             return response()->json([
@@ -126,5 +129,26 @@ class WeKastController extends Controller
         $user = self::auth($request->login, $request->password);
         $presentations = Presentation::byUser($user);
         return $presentations->toJson();
+    }
+
+    public function download(Request $request, $id) {
+        $user = self::auth($request->login, $request->password);
+
+        try {
+            $presentation = Presentation::findOrFail($id);
+            // TODO: Make with X-Accel-Redirect
+            if ($presentation->isBellongs($user)) {
+                return response(Storage::get(self::PRESENTATIONS_PATH . $presentation->id))
+                    ->withHeaders([
+                        'Content-Type' => 'application/octet-stream',
+                        'Content-Disposition' => 'attachment; filename=' . $presentation->name
+                    ]);
+            } else {
+                $debug = env('APP_DEBUG', false);
+                throw new WeKastAPIException($debug ? 8 : 9);
+            }
+        } catch (ModelNotFoundException $e) {
+            throw new WeKastAPIException(9, $e);
+        }
     }
 }

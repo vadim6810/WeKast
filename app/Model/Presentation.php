@@ -22,6 +22,20 @@ class Presentation extends Model
     }
 
     /**
+     * Проверяет, приналдежит ли презентация заданному пользователю
+     * @param User $user
+     * @return bool
+     */
+    public function isBellongs(User $user) {
+        if ($this->user_id == $user->id) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * Возвращает список презентаций заданного пользователя
      * @param User $user
      * @return Presentation[]
      */
