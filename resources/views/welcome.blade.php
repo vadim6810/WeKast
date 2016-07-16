@@ -85,7 +85,7 @@
             <input id="download-login" type="text" class="form-control">
             <label for="download-password">Password:</label>
             <input id="download-password" type="text" class="form-control">
-            <label for="download-id">Password:</label>
+            <label for="download-id">File ID:</label>
             <input id="download-id" type="text" class="form-control">
             <button id="download" class="btn btn-default">download</button>
         </form>

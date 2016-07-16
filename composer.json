@@ -1,8 +1,9 @@
 {
-    "name": "laravel/laravel",
-    "description": "The Laravel Framework.",
-    "keywords": ["framework", "laravel"],
-    "license": "MIT",
+    "name": "wekast/wekast-server",
+    "description": "Server for WeKast Project",
+    "keywords": ["WeKast", "Server"],
+    "version": "0.5.1-alpha",
+    "license": "proprietary",
     "type": "project",
     "require": {
         "php": ">=5.5.9",
