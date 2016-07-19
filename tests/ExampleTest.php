@@ -31,4 +31,21 @@ class ExampleTest extends TestCase
         $message = WeKastAPIException::$errors[0] . ($debug ? ': ' . $prev->getMessage() : '');
         $this->assertTrue($e->getMessage() === $message);
     }
+
+    public function testDuplicateException()
+    {
+        require_once 'MockQueryException.php';
+        $msgs = [];
+        $msgs[] = ["Duplicate entry 'aaaaa@bbb.cc' for key 'users_login_unique'", 1];
+        $msgs[] = ["Duplicate entry 'aaaaa@bbb.cc' for key 'users_email_unique'", 2];
+        $msgs[] = ["UNIQUE constraint failed: users.login", 1];
+        $msgs[] = ["UNIQUE constraint failed: users.email", 2];
+        $msgs[] = [",kf,k sajoewijrwe bla", 0];
+
+        foreach ($msgs as $msg) {
+            $e = new MockQueryException($msg[0]);
+            $exception = new \App\Exceptions\WeKastDuplicateException($e);
+            $this->assertTrue($exception->getCode() === $msg[1]);
+        }
+    }
 }

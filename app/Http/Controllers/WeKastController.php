@@ -10,6 +10,7 @@ namespace App\Http\Controllers;
 
 
 use App\Exceptions\WeKastAPIException;
+use App\Exceptions\WeKastDuplicateException;
 use App\Model\Presentation;
 use App\Model\User;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -17,7 +18,6 @@ use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
  * Контроллер, обрабатывающий запросы к API
@@ -61,7 +61,7 @@ class WeKastController extends Controller
     {
         try {
             $login = $request->input('login');
-            // Проверяем логин на соответствие TODO вынести проверки в Middleware
+            // Проверяем логин на соответствие TODO вынести проверки в Middleware?
             if (mb_strlen($login) < 6) {
                 throw new WeKastAPIException(4);
             }
@@ -83,21 +83,7 @@ class WeKastController extends Controller
                 'password' => $password
             ]);
         } catch (QueryException $e) {
-            switch ($e->errorInfo[0]) {
-                case '23000':
-                    $m = array();
-                    if (preg_match('#^UNIQUE constraint failed: users\.(\w+)$#', $e->errorInfo[2], $m)) {
-                        $errors = [
-                            'login' => 1,
-                            'email' => 2,
-                        ];
-                        throw new WeKastAPIException(isset($errors[$m[1]]) ? $errors[$m[1]] : 0);
-                    }
-                    break;
-                default:
-                    throw new WeKastAPIException(0);
-            }
-            return null;
+            throw new WeKastDuplicateException($e);
         }
     }
 
