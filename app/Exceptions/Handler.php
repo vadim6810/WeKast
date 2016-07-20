@@ -42,11 +42,13 @@ class Handler extends ExceptionHandler
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  \Exception  $e
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function render($request, Exception $e)
     {
-        if ($e instanceof WeKastAPIException) {
+        if ($e instanceof WeKastNoFileException) {
+            return Response::error($e->getCode(), $e->getMessage(), 404);
+        } else if ($e instanceof WeKastAPIException) {
             return Response::error($e->getCode(), $e->getMessage());
         } else {
             return parent::render($request, $e);

@@ -33,19 +33,20 @@ class Response
      * Ответ с ошибкой
      * @param $code
      * @param $message
+     * @param int $status
      * @return \Illuminate\Http\JsonResponse
      */
-    static public function error($code, $message)
+    static public function error($code, $message, $status = 200)
     {
         return self::response([
             'status' => $code,
             'error' => $message,
-        ]);
+        ], $status);
     }
 
-    static private function response($data)
+    static private function response($data, $status = 200)
     {
-        return response()->json($data);
+        return response()->json($data, $status);
     }
 
 }
