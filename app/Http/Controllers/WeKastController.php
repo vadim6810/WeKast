@@ -100,24 +100,28 @@ class WeKastController extends Controller
 
     public function upload(Request $request)
     {
-        $user = self::auth($request->login, $request->password);
+        try {
+            $user = self::auth($request->login, $request->password);
 
-        $file = $request->file('file');
-        if ($file->isValid()) {
-            $presentation = new Presentation();
-            $presentation->setUser($user);
-            $presentation->name = $file->getClientOriginalName();
-            $presentation->save();
-            Storage::put(
-                self::PRESENTATIONS_PATH . $presentation->id,
-                file_get_contents($file->getRealPath())
-            );
-            return Response::normal([
-                'id' => $presentation->id,
-                'file' => $presentation->name
-            ]);
-        } else {
-            throw new WeKastAPIException(7);
+            $file = $request->file('file');
+            if ($file->isValid()) {
+                $presentation = new Presentation();
+                $presentation->setUser($user);
+                $presentation->name = $file->getClientOriginalName();
+                $presentation->save();
+                Storage::put(
+                    self::PRESENTATIONS_PATH . $presentation->id,
+                    file_get_contents($file->getRealPath())
+                );
+                return Response::normal([
+                    'id' => $presentation->id,
+                    'file' => $presentation->name
+                ]);
+            } else {
+                throw new WeKastAPIException(7);
+            }
+        } catch (ErrorException $e) {
+            throw new WeKastNoFileException(11, $e);
         }
     }
 
@@ -146,8 +150,6 @@ class WeKastController extends Controller
             }
         } catch (ModelNotFoundException $e) {
             throw new WeKastNoFileException(9, $e);
-        } catch (ErrorException $e) {
-            throw new WeKastNoFileException(11, $e);
         }
     }
 }
