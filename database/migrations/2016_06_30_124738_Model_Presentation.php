@@ -1,7 +1,9 @@
 <?php
 
+use App\Http\Controllers\WeKastController;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Support\Facades\Storage;
 
 class ModelPresentation extends Migration
 {
@@ -32,6 +34,7 @@ class ModelPresentation extends Migration
      */
     public function down()
     {
+        Storage::deleteDirectory(WeKastController::PRESENTATIONS_PATH);
         Schema::drop(self::TABLE_NAME);
     }
 }
