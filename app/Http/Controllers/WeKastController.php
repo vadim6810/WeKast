@@ -11,6 +11,7 @@ namespace App\Http\Controllers;
 
 use App\Exceptions\WeKastAPIException;
 use App\Exceptions\WeKastDuplicateException;
+use App\Http\Responses\Response;
 use App\Model\Presentation;
 use App\Model\User;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -77,7 +78,7 @@ class WeKastController extends Controller
 
             $user->save();
 
-            return response()->json([
+            return Response::normal([
                 'login' => $login,
                 'email' => $email,
                 'password' => $password
@@ -101,7 +102,7 @@ class WeKastController extends Controller
                 self::PRESENTATIONS_PATH . $presentation->id,
                 file_get_contents($file->getRealPath())
             );
-            return response()->json([
+            return Response::normal([
                 'id' => $presentation->id,
                 'file' => $presentation->name
             ]);
@@ -114,7 +115,7 @@ class WeKastController extends Controller
     {
         $user = self::auth($request->login, $request->password);
         $presentations = Presentation::byUser($user);
-        return $presentations->toJson();
+        return Response::normal($presentations);
     }
 
     public function download(Request $request, $id) {

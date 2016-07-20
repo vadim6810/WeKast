@@ -24,7 +24,7 @@ class WeKastAPIException extends \Exception
      * @var array
      */
     static $errors = [
-        0 => 'Error',
+        0 => 'No error',
         1 => 'Duplicate login',
         2 => 'Duplicate email',
         3 => 'Error email format',
@@ -34,6 +34,7 @@ class WeKastAPIException extends \Exception
         7 => 'Bad file',
         8 => 'Presentation not belongs this user',
         9 => 'Presentation not found',
+        10 => 'Unknown error',
     ];
 
     /**
@@ -46,8 +47,9 @@ class WeKastAPIException extends \Exception
         if ($code && isset(self::$errors[$code])) {
             $message = self::$errors[$code];
         } else {
+            $code = 10;
             $debug = env('APP_DEBUG', false);
-            $message = self::$errors[0] . ($debug ? ': ' . $previous->getMessage() : '');
+            $message = self::$errors[10] . ($debug ? ': ' . $previous->getMessage() : '');
         }
         parent::__construct($message, $code, $previous);
     }

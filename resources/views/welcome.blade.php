@@ -67,7 +67,7 @@
             <input name="login" id="upload-login" type="text" class="form-control">
             <label for="upload-password">Password:</label>
             <input name="password" id="upload-password" type="text" class="form-control">
-            <label for="file">Password:</label>
+            <label for="file">File:</label>
             <input name="file" id="file" type="file" class="form-control">
             <button id="auth" class="btn btn-default">Auth</button>
         </form>

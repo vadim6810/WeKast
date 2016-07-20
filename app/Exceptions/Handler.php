@@ -2,6 +2,7 @@
 
 namespace App\Exceptions;
 
+use App\Http\Responses\Response;
 use Exception;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Auth\Access\AuthorizationException;
@@ -46,10 +47,7 @@ class Handler extends ExceptionHandler
     public function render($request, Exception $e)
     {
         if ($e instanceof WeKastAPIException) {
-            return response()->json([
-                'err' => $e->getMessage(),
-                'num' => $e->getCode()
-            ]);
+            return Response::error($e->getCode(), $e->getMessage());
         } else {
             return parent::render($request, $e);
         }
