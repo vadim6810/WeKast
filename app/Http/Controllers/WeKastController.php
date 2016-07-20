@@ -15,6 +15,7 @@ use App\Exceptions\WeKastNoFileException;
 use App\Http\Responses\Response;
 use App\Model\Presentation;
 use App\Model\User;
+use ErrorException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
@@ -145,6 +146,8 @@ class WeKastController extends Controller
             }
         } catch (ModelNotFoundException $e) {
             throw new WeKastNoFileException(9, $e);
+        } catch (ErrorException $e) {
+            throw new WeKastNoFileException(11, $e);
         }
     }
 }

@@ -17,6 +17,10 @@ class ModelPresentation extends Migration
     public function up()
     {
         Storage::makeDirectory(WeKastController::PRESENTATIONS_PATH, 0777);
+        $dir = 'storage/app/' . WeKastController::PRESENTATIONS_PATH;
+        if (file_exists($dir)) {
+            chmod($dir, 0777);
+        }
 
         Schema::create(self::TABLE_NAME, function(Blueprint $table)
         {

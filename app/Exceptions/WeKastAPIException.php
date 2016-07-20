@@ -35,6 +35,7 @@ class WeKastAPIException extends \Exception
         8 => 'Presentation not belongs this user',
         9 => 'Presentation not found',
         10 => 'Unknown error',
+        11 => 'Internal storage error',
     ];
 
     /**
