@@ -16,6 +16,8 @@ class ModelPresentation extends Migration
      */
     public function up()
     {
+        Storage::makeDirectory(WeKastController::PRESENTATIONS_PATH, 0777);
+
         Schema::create(self::TABLE_NAME, function(Blueprint $table)
         {
             $table->engine = 'MyISAM';
