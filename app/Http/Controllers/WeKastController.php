@@ -92,7 +92,8 @@ class WeKastController extends Controller
 
             $host = env('APP_URL', false);
             $link = $host . 'confirm/' . $user->confirmed;;
-            Mail::send('emails.confirm', ['link' => $link], function ($m) use ($user) {
+            $data = ['link' => $link, 'login' => $user->login, 'password' => $password];
+            Mail::send('emails.confirm', $data, function ($m) use ($user) {
                 $m->from(env('MAIL_FROM'), 'WeKat Email confirm');
                 $m->to($user->email, $user->login)->subject('Confirm email!');
             });
