@@ -36,6 +36,7 @@ class WeKastAPIException extends \Exception
         9 => 'Presentation not found',
         10 => 'Unknown error',
         11 => 'Internal storage error',
+        12 => 'User not found with this email',
     ];
 
     /**

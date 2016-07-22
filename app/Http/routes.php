@@ -28,8 +28,4 @@ Route::post('/download/{id}', "WeKastController@download");
 
 Route::get('/confirm/{hash}', "WeKastController@confirm");
 
-Route::post('/reset', "WeKastController@password");
-
-Route::get('/test', function () {
-    return get_class(Mail::getFacadeRoot());
-});
+Route::post('/reset', "WeKastController@reset");

@@ -89,6 +89,12 @@
             <input id="download-id" type="text" class="form-control">
             <button id="download" class="btn btn-default">download</button>
         </form>
+        <form class="form-group">
+            <h3>Password reminder</h3>
+            <label for="remind-email">email:</label>
+            <input id="remind-email" type="text" class="form-control">
+            <button id="remind" class="btn btn-default">Remind</button>
+        </form>
         <div id="output">Output...</div>
     </div>
 </div>
@@ -99,79 +105,99 @@
         integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS"
         crossorigin="anonymous"></script>
 <script>
-    $("#register").click(function (e) {
-        e.preventDefault();
-        var output = $("#output");
-        var d = {
-            login: $("#login").val(),
-            email: $("#email").val()
-        };
 
-        $.post("register", d, function (data) {
-            output.text(data);
-        }, "text");
-    });
+    $(function () {
+        $("#register").click(function (e) {
+            e.preventDefault();
+            var output = $("#output");
+            var d = {
+                login: $("#login").val(),
+                email: $("#email").val()
+            };
 
-    $("#list").click(function (e) {
-        e.preventDefault();
-        var output = $("#output");
-        var d = {
-            login: $("#list-login").val(),
-            password: $("#list-password").val()
-        };
-
-        $.post("list", d, function (data) {
-            output.text(data);
-        }, "text");
-    });
-
-    $("#download").click(function (e) {
-        e.preventDefault();
-        var output = $("#output");
-        var d = {
-            login: $("#download-login").val(),
-            password: $("#download-password").val()
-        };
-        var id = $("#download-id").val();
-        $.post("download/" + id, d, function (data) {
-            output.text(data);
-        }, "text");
-    });
-
-
-    $("#auth").click(function (e) {
-        e.preventDefault();
-        var output = $("#output");
-        var d = new FormData($('#upload')[0]);
-
-        $.ajax({
-            url: 'upload',  //Server script to process data
-            type: 'POST',
-            xhr: function() {  // Custom XMLHttpRequest
-                var myXhr = $.ajaxSettings.xhr();
-                if(myXhr.upload){ // Check if upload property exists
-                    myXhr.upload.addEventListener('progress',function (e) {
-                        console.log(e);
-                    }, false); // For handling the progress of the upload
-                }
-                return myXhr;
-            },
-            //Ajax events
-            success: function (data) {
+            $.post("register", d, function (data) {
                 output.text(data);
-            },
-            error: function (data) {
-                output.text(data);
-            },
-            // Form data
-            data: d,
-            //Options to tell jQuery not to process data or worry about content-type.
-            cache: false,
-            contentType: false,
-            processData: false,
-            dataType: "text"
+            }, "text");
         });
+
+        $("#list").click(function (e) {
+            e.preventDefault();
+            var output = $("#output");
+            var d = {
+                login: $("#list-login").val(),
+                password: $("#list-password").val()
+            };
+
+            $.post("list", d, function (data) {
+                output.text(data);
+            }, "text");
+        });
+
+        $("#download").click(function (e) {
+            e.preventDefault();
+            var output = $("#output");
+            var d = {
+                login: $("#download-login").val(),
+                password: $("#download-password").val()
+            };
+            var id = $("#download-id").val();
+            $.post("download/" + id, d, function (data) {
+                output.text(data);
+            }, "text");
+        });
+
+
+        $("#auth").click(function (e) {
+            e.preventDefault();
+            var output = $("#output");
+            var d = new FormData($('#upload')[0]);
+
+            $.ajax({
+                url: 'upload',  //Server script to process data
+                type: 'POST',
+                xhr: function() {  // Custom XMLHttpRequest
+                    var myXhr = $.ajaxSettings.xhr();
+                    if(myXhr.upload){ // Check if upload property exists
+                        myXhr.upload.addEventListener('progress',function (e) {
+                            console.log(e);
+                        }, false); // For handling the progress of the upload
+                    }
+                    return myXhr;
+                },
+                //Ajax events
+                success: function (data) {
+                    output.text(data);
+                },
+                error: function (data) {
+                    output.text(data);
+                },
+                // Form data
+                data: d,
+                //Options to tell jQuery not to process data or worry about content-type.
+                cache: false,
+                contentType: false,
+                processData: false,
+                dataType: "text"
+            });
+
+        });
+
+        $("#remind").click(function (e) {
+            e.preventDefault();
+            var output = $("#output");
+            var d = {
+                email: $("#remind-email").val()
+            };
+
+            console.log(d);
+
+            $.post("reset", d, function (data) {
+                output.text(data);
+            }, "text");
+        });
+
     });
+
 </script>
 </body>
 </html>
