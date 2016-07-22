@@ -12,6 +12,8 @@
 */
 
 
+use Illuminate\Support\Facades\Mail;
+
 Route::get('/', function () {
     return view('welcome');
 });
@@ -24,4 +26,10 @@ Route::post('/upload', "WeKastController@upload");
 
 Route::post('/download/{id}', "WeKastController@download");
 
+Route::get('/confirm/{hash}', "WeKastController@confirm");
+
 Route::post('/reset', "WeKastController@password");
+
+Route::get('/test', function () {
+    return get_class(Mail::getFacadeRoot());
+});

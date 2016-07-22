@@ -20,6 +20,7 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 
 /**
@@ -31,6 +32,7 @@ use Illuminate\Support\Facades\Storage;
 class WeKastController extends Controller
 {
     const PRESENTATIONS_PATH = 'presentations/';
+    const CONFIRMED_SALT = "jsd324kw23hmn43mn;";
 
     /**
      * Функция проверки логина и пароля
@@ -85,13 +87,20 @@ class WeKastController extends Controller
             $user->login = $login;
             $user->email = $email;
             $user->password = Hash::make($password);
-
+            $user->confirmed = md5(self::CONFIRMED_SALT . time() . rand(10000, 99999));
             $user->save();
+
+            $host = env('APP_URL', false);
+            $link = $host . 'confirm/' . $user->confirmed;;
+            Mail::send('emails.confirm', ['link' => $link], function ($m) use ($user) {
+                $m->from(env('MAIL_FROM'), 'WeKat Email confirm');
+                $m->to($user->email, $user->login)->subject('Confirm email!');
+            });
 
             return Response::normal([
                 'login' => $login,
                 'email' => $email,
-                'password' => $password
+                'password' => $password,
             ]);
         } catch (QueryException $e) {
             throw new WeKastDuplicateException($e);
@@ -136,6 +145,9 @@ class WeKastController extends Controller
         $user = self::auth($request->login, $request->password, true);
 
         try {
+            /**
+             * @var Presentation $presentation
+             */
             $presentation = Presentation::findOrFail($id);
             // TODO: Make with X-Accel-Redirect
             if ($presentation->isBellongs($user)) {
@@ -150,6 +162,17 @@ class WeKastController extends Controller
             }
         } catch (ModelNotFoundException $e) {
             throw new WeKastNoFileException(9, $e);
+        }
+    }
+
+    public function confirm(Request $request, $hash) {
+        try {
+            $user = User::where('confirmed', $hash)->take(1)->firstOrFail();
+            $user->confirmed = null;
+            $user->save();
+            return view('confirm', ['email' => $user->email]);
+        } catch (ModelNotFoundException $e) {
+            return view('confirm', ['email' => false]);
         }
     }
 }
