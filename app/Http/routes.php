@@ -12,10 +12,13 @@
 */
 
 
-use Illuminate\Support\Facades\Mail;
-
 Route::get('/', function () {
-    return view('welcome');
+    $debug = env('APP_DEBUG', false);
+    if ($debug) {
+        return view('welcome');
+    } else {
+        return 'No data';
+    }
 });
 
 Route::post('/register', "WeKastController@register");
