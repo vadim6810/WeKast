@@ -21,7 +21,7 @@ class ModelUser extends Migration
             $table->string('login')->unique();
             $table->string('email')->unique();
             $table->string('password');
-            $table->string('confirmed', 16)->nullable();
+            $table->string('confirmed', 32)->nullable();
             $table->index('confirmed');
             $table->timestamps();
         });
