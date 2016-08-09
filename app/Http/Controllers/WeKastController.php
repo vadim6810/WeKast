@@ -20,6 +20,7 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 
@@ -31,6 +32,13 @@ use Illuminate\Support\Facades\Storage;
  */
 class WeKastController extends Controller
 {
+    private static $debug;
+    public function __construct()
+    {
+        self::$debug = env('APP_DEBUG', false);
+    }
+
+
     const PRESENTATIONS_PATH = 'presentations/';
     const CONFIRMED_SALT = "jsd324kw23hmn43mn;";
 
@@ -47,11 +55,10 @@ class WeKastController extends Controller
         try {
             $user = User::where('login', $login)->take(1)->firstOrFail();
             if (!Hash::check($pass, $user->password)) {
-                $debug = env('APP_DEBUG', false);
                 if ($noJson) {
-                    throw new WeKastNoFileException($debug ? 6 : 5);
+                    throw new WeKastNoFileException(self::$debug ? 6 : 5);
                 } else {
-                    throw new WeKastAPIException($debug ? 6 : 5);
+                    throw new WeKastAPIException(self::$debug ? 6 : 5);
                 }
             }
             return $user;
@@ -72,6 +79,7 @@ class WeKastController extends Controller
      */
     public function register(Request $request)
     {
+        self::logRequest($request);
         try {
             $login = $request->input('login');
             // Проверяем логин на соответствие TODO вынести проверки в Middleware?
@@ -110,6 +118,7 @@ class WeKastController extends Controller
 
     public function upload(Request $request)
     {
+        self::logRequest($request);
         try {
             $user = self::auth($request->login, $request->password);
 
@@ -137,12 +146,16 @@ class WeKastController extends Controller
 
     public function presentationsList(Request $request)
     {
+        self::logRequest($request);
         $user = self::auth($request->login, $request->password);
         $presentations = Presentation::byUser($user);
         return Response::normal($presentations);
     }
 
-    public function download(Request $request, $id) {
+    public function download(Request $request, $id)
+    {
+        self::logRequest($request);
+
         $user = self::auth($request->login, $request->password, true);
 
         try {
@@ -158,15 +171,15 @@ class WeKastController extends Controller
                         'Content-Disposition' => 'attachment; filename=' . $presentation->name
                     ]);
             } else {
-                $debug = env('APP_DEBUG', false);
-                throw new WeKastNoFileException($debug ? 8 : 9);
+                throw new WeKastNoFileException(self::$debug ? 8 : 9);
             }
         } catch (ModelNotFoundException $e) {
             throw new WeKastNoFileException(9, $e);
         }
     }
 
-    public function confirm(Request $request, $hash) {
+    public function confirm(Request $request, $hash)
+    {
         try {
             $user = User::where('confirmed', $hash)->take(1)->firstOrFail();
             $user->confirmed = null;
@@ -178,6 +191,7 @@ class WeKastController extends Controller
     }
 
     public function reset(Request $request) {
+        self::logRequest($request);
         $answer = "OK";
         try {
             $user = User::where('email', $request->email)->take(1)->firstOrFail();
@@ -196,7 +210,16 @@ class WeKastController extends Controller
             $answer = "User not found";
         }
 
-        $debug = env('APP_DEBUG', false);
-        return Response::normal($debug ? $answer : "Ok");
+        return Response::normal(self::$debug ? $answer : "Ok");
+    }
+
+    /**
+     * TODO: move to middleware
+     * @param Request $r
+     */
+    public static function logRequest(Request $r) {
+        if (self::$debug) {
+            Log::info("[" . $r->header('User-Agent') . "]: /" . $r->path() . " " . json_encode($r->all()));
+        }
     }
 }
