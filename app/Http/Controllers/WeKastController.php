@@ -152,6 +152,30 @@ class WeKastController extends Controller
         return Response::normal($presentations);
     }
 
+    public function remove(Request $request, $id)
+    {
+        self::logRequest($request);
+
+        $user = self::auth($request->login, $request->password, true);
+
+        try {
+            /**
+             * @var Presentation $presentation
+             */
+            $presentation = Presentation::findOrFail($id);
+
+            if ($presentation->isBellongs($user)) {
+                Storage::delete(self::PRESENTATIONS_PATH . $presentation->id);
+                $presentation->delete();
+                return Response::normal($id);
+            } else {
+                throw new WeKastAPIException(self::$debug ? 8 : 9);
+            }
+        } catch (ModelNotFoundException $e) {
+            throw new WeKastAPIException(9, $e);
+        }
+    }
+
     public function download(Request $request, $id)
     {
         self::logRequest($request);

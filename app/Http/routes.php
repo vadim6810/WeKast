@@ -32,3 +32,5 @@ Route::post('/download/{id}', "WeKastController@download");
 Route::get('/confirm/{hash}', "WeKastController@confirm");
 
 Route::post('/reset', "WeKastController@reset");
+
+Route::post('/delete/{id}', "WeKastController@remove");

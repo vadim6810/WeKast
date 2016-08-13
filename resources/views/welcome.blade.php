@@ -90,6 +90,16 @@
             <button id="download" class="btn btn-default">download</button>
         </form>
         <form class="form-group">
+            <h3>Delete Tester</h3>
+            <label for="delete-login">Login:</label>
+            <input id="delete-login" type="text" class="form-control">
+            <label for="delete-password">Password:</label>
+            <input id="delete-password" type="text" class="form-control">
+            <label for="delete-id">File ID:</label>
+            <input id="delete-id" type="text" class="form-control">
+            <button id="delete" class="btn btn-default">delete</button>
+        </form>
+        <form class="form-group">
             <h3>Password reminder</h3>
             <label for="remind-email">email:</label>
             <input id="remind-email" type="text" class="form-control">
@@ -142,6 +152,19 @@
             };
             var id = $("#download-id").val();
             $.post("download/" + id, d, function (data) {
+                output.text(data);
+            }, "text");
+        });
+
+        $("#delete").click(function (e) {
+            e.preventDefault();
+            var output = $("#output");
+            var d = {
+                login: $("#delete-login").val(),
+                password: $("#delete-password").val()
+            };
+            var id = $("#delete-id").val();
+            $.post("delete/" + id, d, function (data) {
                 output.text(data);
             }, "text");
         });
