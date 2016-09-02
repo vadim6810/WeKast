@@ -1,0 +1,100 @@
+<dataSource name="Sqlite (Xerial) - database.sqlite">
+  <database-model serializer="dbm" rdbms="SQLITE" format-version="2.6">
+    <schema id="1">
+      <visible>1</visible>
+    </schema>
+    <table id="2" parent="1" name="migrations" />
+    <table id="3" parent="1" name="presentations" />
+    <table id="4" parent="1" name="sqlite_sequence" />
+    <table id="5" parent="1" name="users" />
+    <column id="6" parent="2" name="migration">
+      <mandatory>1</mandatory>
+      <data-type>VARCHAR(0,-1)|12</data-type>
+    </column>
+    <column id="7" parent="2" name="batch">
+      <mandatory>1</mandatory>
+      <data-type>INTEGER(0,-1)|4</data-type>
+    </column>
+    <column id="8" parent="3" name="id">
+      <mandatory>1</mandatory>
+      <data-type>INTEGER(0,-1)|4</data-type>
+    </column>
+    <column id="9" parent="3" name="user_id">
+      <mandatory>1</mandatory>
+      <data-type>INTEGER(0,-1)|4</data-type>
+    </column>
+    <column id="10" parent="3" name="name">
+      <mandatory>1</mandatory>
+      <data-type>VARCHAR(0,-1)|12</data-type>
+    </column>
+    <column id="11" parent="3" name="created_at">
+      <data-type>DATETIME(0,-1)|12</data-type>
+    </column>
+    <column id="12" parent="3" name="updated_at">
+      <data-type>DATETIME(0,-1)|12</data-type>
+    </column>
+    <key id="13" parent="3">
+      <columns>id</columns>
+      <primary>1</primary>
+    </key>
+    <foreign-key id="14" parent="3" name="#FAKE_presentations_1">
+      <name-surrogate>1</name-surrogate>
+      <columns>user_id</columns>
+      <deferrable>1</deferrable>
+      <initially-deferred>1</initially-deferred>
+      <ref-key>user(id)</ref-key>
+      <cascade-update-rule>no_action</cascade-update-rule>
+      <cascade-delete-rule>no_action</cascade-delete-rule>
+    </foreign-key>
+    <column id="15" parent="4" name="name">
+      <data-type>(0,-1)|12</data-type>
+    </column>
+    <column id="16" parent="4" name="seq">
+      <data-type>(0,-1)|12</data-type>
+    </column>
+    <column id="17" parent="5" name="id">
+      <mandatory>1</mandatory>
+      <data-type>INTEGER(0,-1)|4</data-type>
+    </column>
+    <column id="18" parent="5" name="login">
+      <mandatory>1</mandatory>
+      <data-type>VARCHAR(0,-1)|12</data-type>
+    </column>
+    <column id="19" parent="5" name="email">
+      <mandatory>1</mandatory>
+      <data-type>VARCHAR(0,-1)|12</data-type>
+    </column>
+    <column id="20" parent="5" name="password">
+      <mandatory>1</mandatory>
+      <data-type>VARCHAR(0,-1)|12</data-type>
+    </column>
+    <column id="21" parent="5" name="confirmed">
+      <data-type>VARCHAR(0,-1)|12</data-type>
+    </column>
+    <column id="22" parent="5" name="created_at">
+      <data-type>DATETIME(0,-1)|12</data-type>
+    </column>
+    <column id="23" parent="5" name="updated_at">
+      <data-type>DATETIME(0,-1)|12</data-type>
+    </column>
+    <index id="24" parent="5" name="users_login_unique">
+      <columns>login</columns>
+      <desc-columns />
+      <unique>1</unique>
+    </index>
+    <index id="25" parent="5" name="users_email_unique">
+      <columns>email</columns>
+      <desc-columns />
+      <unique>1</unique>
+    </index>
+    <index id="26" parent="5" name="users_confirmed_index">
+      <columns>confirmed</columns>
+      <desc-columns />
+      <unique>1</unique>
+    </index>
+    <key id="27" parent="5">
+      <columns>id</columns>
+      <primary>1</primary>
+    </key>
+  </database-model>
+</dataSource>
