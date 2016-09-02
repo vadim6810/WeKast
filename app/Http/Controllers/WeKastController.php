@@ -189,9 +189,12 @@ class WeKastController extends Controller
             $presentation = Presentation::findOrFail($id);
             // TODO: Make with X-Accel-Redirect
             if ($presentation->isBellongs($user)) {
-                return response(Storage::get(self::PRESENTATIONS_PATH . $presentation->id))
+                $fileName = self::PRESENTATIONS_PATH . $presentation->id;
+                $size = Storage::size($fileName);
+                return response(Storage::get($fileName))
                     ->withHeaders([
                         'Content-Type' => 'application/octet-stream',
+                        'Content-Length' => $size,
                         'Content-Disposition' => 'attachment; filename=' . $presentation->name
                     ]);
             } else {
