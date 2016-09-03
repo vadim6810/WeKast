@@ -128,15 +128,17 @@ class WeKastController extends Controller
             $user->login = $login;
             $user->email = $email;
             $user->password = Hash::make($password);
-            $user->confirmed = md5(self::CONFIRMED_SALT . time() . rand(10000, 99999));
+            // Для дебаженных логинов, письма подтверждать
+            if ($check === self::LOGIN_TRUE) {
+                $user->confirmed = md5(self::CONFIRMED_SALT . time() . rand(10000, 99999));
+            }
             $user->save();
 
             $host = env('APP_URL', false);
             $link = $host . '/confirm/' . $user->confirmed;;
             $data = ['link' => $link, 'login' => $user->login, 'password' => $password];
-            if ($check === self::LOGIN_DEBUG) {
-
-            } else {
+            // Отправлять письмо только для недебажных логинов
+            if ($check === self::LOGIN_TRUE) {
                 Mail::send('emails.confirm', $data, function ($m) use ($user) {
                     $m->from(env('MAIL_FROM'), 'WeKat Email confirm');
                     $m->to($user->email, $user->login)->subject('Confirm email!');
