@@ -28,7 +28,7 @@ class WeKastAPIException extends \Exception
         1 => 'Duplicate login',
         2 => 'Duplicate email',
         3 => 'Error email format',
-        4 => 'Min 6 symbols in login',
+        4 => 'Login must contains from 7 to 15 digits',
         5 => 'User not found with this password',
         6 => 'Bad password',
         7 => 'Bad file',

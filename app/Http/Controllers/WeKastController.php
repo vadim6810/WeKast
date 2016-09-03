@@ -32,10 +32,23 @@ use Illuminate\Support\Facades\Storage;
  */
 class WeKastController extends Controller
 {
-    private static $debug;
-    public function __construct()
+    /**
+     * Виды логинов: Невалидный, Валидный, Для отладки.
+     */
+    const LOGIN_FALSE = 0;
+    const LOGIN_TRUE = 1;
+    const LOGIN_DEBUG = 2;
+
+    static private $debug;
+
+    static public function init()
     {
         self::$debug = env('APP_DEBUG', false);
+    }
+
+    public function __construct()
+    {
+        self::init();
     }
 
 
@@ -44,6 +57,7 @@ class WeKastController extends Controller
 
     /**
      * Функция проверки логина и пароля
+     * TODO: перенести в Middleware
      *
      * @param $login
      * @param $pass
@@ -72,6 +86,24 @@ class WeKastController extends Controller
     }
 
     /**
+     * Проверяет логин на соотвествие формату
+     * @param $login
+     * @return integer
+     */
+    static public function checkLogin($login)
+    {
+        if (self::$debug) {
+            if ($login{0} === "0") {
+                return self::LOGIN_DEBUG;
+            }
+        }
+        if (preg_match('/^\d{7,15}$/', $login)) {
+            return self::LOGIN_TRUE;
+        }
+        return self::LOGIN_FALSE;
+    }
+
+    /**
      * Контроллер регистрации
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
@@ -82,8 +114,9 @@ class WeKastController extends Controller
         self::logRequest($request);
         try {
             $login = $request->input('login');
-            // Проверяем логин на соответствие TODO вынести проверки в Middleware?
-            if (mb_strlen($login) < 6) {
+            // Проверяем логин на соответствие
+            $check = $this->checkLogin($login);
+            if ($check === self::LOGIN_FALSE) {
                 throw new WeKastAPIException(4);
             }
             $email = $request->input('email');
@@ -101,10 +134,14 @@ class WeKastController extends Controller
             $host = env('APP_URL', false);
             $link = $host . '/confirm/' . $user->confirmed;;
             $data = ['link' => $link, 'login' => $user->login, 'password' => $password];
-            Mail::send('emails.confirm', $data, function ($m) use ($user) {
-                $m->from(env('MAIL_FROM'), 'WeKat Email confirm');
-                $m->to($user->email, $user->login)->subject('Confirm email!');
-            });
+            if ($check === self::LOGIN_DEBUG) {
+
+            } else {
+                Mail::send('emails.confirm', $data, function ($m) use ($user) {
+                    $m->from(env('MAIL_FROM'), 'WeKat Email confirm');
+                    $m->to($user->email, $user->login)->subject('Confirm email!');
+                });
+            }
 
             return Response::normal([
                 'login' => $login,

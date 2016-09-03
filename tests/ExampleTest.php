@@ -17,9 +17,6 @@ class ExampleTest extends TestCase
 
     public function testException()
     {
-
-
-
         $e = new WeKastAPIException(3);
         $this->assertTrue($e->getMessage() === WeKastAPIException::$errors[3]);
 
@@ -46,6 +43,32 @@ class ExampleTest extends TestCase
             $e = new MockQueryException($msg[0]);
             $exception = new \App\Exceptions\WeKastDuplicateException($e);
             $this->assertTrue($exception->getCode() === $msg[1]);
+        }
+    }
+
+    public function testLoginCheck()
+    {
+        $debug = env('APP_DEBUG', false);
+        \App\Http\Controllers\WeKastController::init();
+
+        $LOGIN_FALSE = \App\Http\Controllers\WeKastController::LOGIN_FALSE;
+        $LOGIN_TRUE = \App\Http\Controllers\WeKastController::LOGIN_TRUE;
+        $LOGIN_DEBUG = $debug ? \App\Http\Controllers\WeKastController::LOGIN_DEBUG : \App\Http\Controllers\WeKastController::LOGIN_FALSE;
+
+        $logins = [
+            'adas' => $LOGIN_FALSE,
+            '23424' => $LOGIN_FALSE,
+            '2222252324234234234' => $LOGIN_FALSE,
+            '2343443234' => $LOGIN_TRUE,
+            '' => $LOGIN_FALSE,
+            '024323' => $LOGIN_DEBUG,
+            '0243232sdfsdf' => $LOGIN_DEBUG,
+            '02432323423432423424' => $LOGIN_DEBUG,
+            '0' => $LOGIN_DEBUG,
+        ];
+
+        foreach ($logins as $login => $result) {
+            $this->assertEquals(\App\Http\Controllers\WeKastController::checkLogin($login), $result);
         }
     }
 }
