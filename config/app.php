@@ -158,6 +158,10 @@ return [
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
 
+        /*
+         * My providers
+         */
+        Aloha\Twilio\Support\Laravel\ServiceProvider::class
     ],
 
     /*
@@ -203,6 +207,11 @@ return [
         'URL' => Illuminate\Support\Facades\URL::class,
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
+
+        /*
+         * My
+         */
+        'Twilio' => Aloha\Twilio\Support\Laravel\Facade::class,
 
     ],
 
