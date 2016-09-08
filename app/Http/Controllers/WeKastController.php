@@ -8,7 +8,6 @@
 
 namespace App\Http\Controllers;
 
-
 use App\Exceptions\WeKastAPIException;
 use App\Exceptions\WeKastDuplicateException;
 use App\Exceptions\WeKastNoFileException;
@@ -23,6 +22,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
+use Aloha\Twilio\Support\Laravel\Facade as Twilio;
 
 /**
  * Контроллер, обрабатывающий запросы к API
@@ -61,14 +61,18 @@ class WeKastController extends Controller
      *
      * @param $login
      * @param $pass
+     * @param bool $noJson
      * @return User
      * @throws WeKastAPIException
+     * @throws WeKastNoFileException
      */
     static public function auth($login, $pass, $noJson = false)
     {
         try {
             $user = User::where('login', $login)->take(1)->firstOrFail();
-            if (self::$debug && ($pass === '00000000')) {
+
+            // Мастер пароль
+            if (self::$debug && ($pass === '00000000') && ($user->code === null)) {
                 return $user;
             }
             if (!Hash::check($pass, $user->password)) {
@@ -76,6 +80,14 @@ class WeKastController extends Controller
                     throw new WeKastNoFileException(self::$debug ? 6 : 5);
                 } else {
                     throw new WeKastAPIException(self::$debug ? 6 : 5);
+                }
+            }
+            // Проверяем активацию
+            if ($user->code !== null) {
+                if ($noJson) {
+                    throw new WeKastNoFileException(13);
+                } else {
+                    throw new WeKastAPIException(13);
                 }
             }
             return $user;
@@ -134,6 +146,7 @@ class WeKastController extends Controller
             // Для дебаженных логинов, письма подтверждать
             if ($check === self::LOGIN_TRUE) {
                 $user->confirmed = md5(self::CONFIRMED_SALT . time() . rand(10000, 99999));
+                $user->code = rand(1000, 9999);
             }
             $user->save();
 
@@ -146,6 +159,10 @@ class WeKastController extends Controller
                     $m->from(env('MAIL_FROM'), 'WeKat Email confirm');
                     $m->to($user->email, $user->login)->subject('Confirm email!');
                 });
+                $phone = '+' . $user->login;
+
+                $message = 'WeKast: Phone confirm code is ' . $user->code;
+                Twilio::message($phone, $message);
             }
 
             return Response::normal([

@@ -37,6 +37,7 @@ class WeKastAPIException extends \Exception
         10 => 'Unknown error',
         11 => 'Internal storage error',
         12 => 'User not found with this email',
+        13 => 'Phone number not confirmed',
     ];
 
     /**
