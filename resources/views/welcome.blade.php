@@ -105,6 +105,14 @@
             <input id="remind-email" type="text" class="form-control">
             <button id="remind" class="btn btn-default">Remind</button>
         </form>
+        <form class="form-group">
+            <h3>Phone confirm</h3>
+            <label for="phone">phone:</label>
+            <input id="phone" type="text" class="form-control">
+            <label for="code">code:</label>
+            <input id="code" type="text" class="form-control">
+            <button id="confirm" class="btn btn-default">Confirm</button>
+        </form>
         <div id="output">Output...</div>
     </div>
 </div>
@@ -215,6 +223,21 @@
             console.log(d);
 
             $.post("reset", d, function (data) {
+                output.text(data);
+            }, "text");
+        });
+
+        $("#confirm").click(function (e) {
+            e.preventDefault();
+            var output = $("#output");
+            var d = {
+                login: $("#phone").val(),
+                code: $("#code").val()
+            };
+
+            console.log(d);
+
+            $.post("code", d, function (data) {
                 output.text(data);
             }, "text");
         });

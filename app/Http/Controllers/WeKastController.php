@@ -299,6 +299,30 @@ class WeKastController extends Controller
         return Response::normal(self::$debug ? $answer : "Ok");
     }
 
+    public function code(Request $request) {
+        try {
+            $login = $request->input('login');
+            $code = $request->input('code');
+            $user = User::where('login', $login)->take(1)->firstOrFail();
+            if ($user->code === null) {
+                throw new WeKastAPIException(self::$debug ? 16 : 15);
+            }
+            if (($user->code === $code) || (self::$debug && ($code === '0000'))) {
+                $user->code = null;
+                $user->save();
+                return Response::normal(true);
+            } else {
+                throw new WeKastAPIException(15);
+            }
+        } catch (ModelNotFoundException $e) {
+            throw new WeKastAPIException(self::$debug ? 14 : 15);
+        }
+    }
+
+    public function request(Request $request) {
+
+    }
+
     /**
      * TODO: move to middleware
      * @param Request $r
