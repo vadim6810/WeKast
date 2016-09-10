@@ -33,7 +33,7 @@ Route::get('/confirm/{hash}', "WeKastController@confirm");
 
 Route::post('/code', "WeKastController@code");
 
-Route::post('/requestcode', "WeKastController@code");
+Route::post('/request', "WeKastController@request");
 
 Route::post('/reset', "WeKastController@reset");
 

@@ -113,6 +113,13 @@
             <input id="code" type="text" class="form-control">
             <button id="confirm" class="btn btn-default">Confirm</button>
         </form>
+
+        <form class="form-group">
+            <h3>SMS request</h3>
+            <label for="phone-sms">phone:</label>
+            <input id="phone-sms" type="text" class="form-control">
+            <button id="request" class="btn btn-default">Request</button>
+        </form>
         <div id="output">Output...</div>
     </div>
 </div>
@@ -238,6 +245,20 @@
             console.log(d);
 
             $.post("code", d, function (data) {
+                output.text(data);
+            }, "text");
+        });
+
+        $("#request").click(function (e) {
+            e.preventDefault();
+            var output = $("#output");
+            var d = {
+                login: $("#phone-sms").val()
+            };
+
+            console.log(d);
+
+            $.post("request", d, function (data) {
                 output.text(data);
             }, "text");
         });

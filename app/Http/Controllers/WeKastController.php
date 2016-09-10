@@ -160,7 +160,6 @@ class WeKastController extends Controller
                     $m->to($user->email, $user->login)->subject('Confirm email!');
                 });
                 $phone = '+' . $user->login;
-
                 $message = 'WeKast: Phone confirm code is ' . $user->code;
                 Twilio::message($phone, $message);
             }
@@ -320,7 +319,21 @@ class WeKastController extends Controller
     }
 
     public function request(Request $request) {
-
+        $answer = "OK";
+        try {
+            $login = $request->input('login');
+            $user = User::where('login', $login)->take(1)->firstOrFail();
+            if ($user->code !== null) {
+                $phone = '+' . $user->login;
+                $message = 'WeKast: Phone confirm code is ' . $user->code;
+                Twilio::message($phone, $message);
+            } else {
+                $answer = "Phone already confirmed";
+            }
+        } catch (ModelNotFoundException $e) {
+            $answer = "User not found";
+        }
+        return Response::normal(self::$debug ? $answer : "Ok");
     }
 
     /**

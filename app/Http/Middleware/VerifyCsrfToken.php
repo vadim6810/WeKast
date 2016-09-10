@@ -19,5 +19,6 @@ class VerifyCsrfToken extends BaseVerifier
         "/delete/*",
         "/reset",
         "/code",
+        "/request",
     ];
 }
