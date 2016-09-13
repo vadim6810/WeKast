@@ -69,7 +69,7 @@
             <input name="password" id="upload-password" type="text" class="form-control">
             <label for="file">File:</label>
             <input name="file" id="file" type="file" class="form-control">
-            <button id="auth" class="btn btn-default">Auth</button>
+            <button id="auth" class="btn btn-default">Upload</button>
         </form>
         <form class="form-group">
             <h3>List Tester</h3>
@@ -77,6 +77,8 @@
             <input id="list-login" type="text" class="form-control">
             <label for="list-password">Password:</label>
             <input id="list-password" type="text" class="form-control">
+            <label for="page">Page:</label>
+            <input id="page" type="text" class="form-control" value="0">
             <button id="list" class="btn btn-default">Get list</button>
         </form>
         <form class="form-group">
@@ -152,8 +154,8 @@
                 login: $("#list-login").val(),
                 password: $("#list-password").val()
             };
-
-            $.post("list", d, function (data) {
+            var page = $("#page").val();
+            $.post("list/" + page, d, function (data) {
                 output.text(data);
             }, "text");
         });

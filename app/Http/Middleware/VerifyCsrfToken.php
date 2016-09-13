@@ -14,7 +14,7 @@ class VerifyCsrfToken extends BaseVerifier
     protected $except = [
         "/register",
         "/upload",
-        "/list",
+        "/list*",
         "/download/*",
         "/delete/*",
         "/reset",

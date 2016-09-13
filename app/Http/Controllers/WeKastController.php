@@ -202,11 +202,11 @@ class WeKastController extends Controller
         }
     }
 
-    public function presentationsList(Request $request)
+    public function presentationsList(Request $request, $page = 0)
     {
         self::logRequest($request);
         $user = self::auth($request->login, $request->password);
-        $presentations = Presentation::byUser($user);
+        $presentations = Presentation::byUser($user, $page);
         return Response::normal($presentations);
     }
 

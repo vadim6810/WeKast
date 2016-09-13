@@ -37,9 +37,10 @@ class Presentation extends Model
     /**
      * Возвращает список презентаций заданного пользователя
      * @param User $user
+     * @param int $page
      * @return Presentation[]
      */
-    static public function byUser(User $user) {
-        return self::where('user_id', $user->id)->get();
+    static public function byUser(User $user, $page = 0) {
+        return self::where('user_id', $user->id)->take(50)->skip(50 * $page)->get();
     }
 }

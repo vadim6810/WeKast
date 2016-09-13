@@ -23,7 +23,7 @@ Route::get('/', function () {
 
 Route::post('/register', "WeKastController@register");
 
-Route::post('/list', "WeKastController@presentationsList");
+Route::post('/list/{page?}', "WeKastController@presentationsList");
 
 Route::post('/upload', "WeKastController@upload");
 
