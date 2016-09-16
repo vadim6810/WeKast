@@ -11,7 +11,7 @@ class Presentation extends Model
      * Атрибуты, которые видны при выдаче в JSON
      * @var array
      */
-    protected $visible = ['id', 'name'];
+    protected $visible = ['id', 'name', 'hash'];
 
     /**
      * Хелпер, задающий пользователя презентации

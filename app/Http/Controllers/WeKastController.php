@@ -186,12 +186,15 @@ class WeKastController extends Controller
             if ($file->isValid()) {
                 $presentation = new Presentation();
                 $presentation->setUser($user);
-                $presentation->name = $file->getClientOriginalName();
+                $presentation->name = $name = $file->getClientOriginalName();
+                $presentation->hash = $hash = md5_file($file->getRealPath());
                 $replace = false;
                 try {
                     $presentation->save();
                 } catch (QueryException $e) {
-                    $presentation = Presentation::byUserName($user, $presentation->name);
+                    $presentation = Presentation::byUserName($user, $name);
+                    $presentation->hash = $hash;
+                    $presentation->save();
                     Storage::delete(self::PRESENTATIONS_PATH . $presentation->id);
                     $replace = true;
                 }
@@ -202,6 +205,7 @@ class WeKastController extends Controller
                 return Response::normal([
                     'id' => $presentation->id,
                     'file' => $presentation->name,
+                    'hash' => $presentation->hash,
                     'replace' => $replace
                 ]);
             } else {
