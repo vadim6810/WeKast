@@ -50,11 +50,14 @@ class WeKastAPIException extends \Exception
      */
     public function __construct($code, Exception $previous = null)
     {
+        $debug = env('APP_DEBUG', false);
         if ($code && isset(self::$errors[$code])) {
             $message = self::$errors[$code];
+            if ($debug && !is_null($previous)) {
+                $message .= ': ' . $previous->getMessage();
+            }
         } else {
             $code = 10;
-            $debug = env('APP_DEBUG', false);
             $message = self::$errors[10] . ($debug ? ': ' . $previous->getMessage() : '');
         }
         parent::__construct($message, $code, $previous);

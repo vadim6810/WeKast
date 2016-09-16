@@ -43,4 +43,8 @@ class Presentation extends Model
     static public function byUser(User $user, $page = 0) {
         return self::where('user_id', $user->id)->take(50)->skip(50 * $page)->get();
     }
+
+    static public function byUserName(User $user, $name) {
+        return self::where('user_id', $user->id)->where('name', $name)->first();
+    }
 }

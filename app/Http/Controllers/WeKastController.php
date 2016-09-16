@@ -27,6 +27,8 @@ use Aloha\Twilio\Support\Laravel\Facade as Twilio;
 /**
  * Контроллер, обрабатывающий запросы к API
  *
+ * TODO refactoring: разделить на два контроллера, с авторизацией и без.
+ *
  * Class WeKastController
  * @package App\Http\Controllers
  */
@@ -185,14 +187,22 @@ class WeKastController extends Controller
                 $presentation = new Presentation();
                 $presentation->setUser($user);
                 $presentation->name = $file->getClientOriginalName();
-                $presentation->save();
+                $replace = false;
+                try {
+                    $presentation->save();
+                } catch (QueryException $e) {
+                    $presentation = Presentation::byUserName($user, $presentation->name);
+                    Storage::delete(self::PRESENTATIONS_PATH . $presentation->id);
+                    $replace = true;
+                }
                 Storage::put(
                     self::PRESENTATIONS_PATH . $presentation->id,
                     file_get_contents($file->getRealPath())
                 );
                 return Response::normal([
                     'id' => $presentation->id,
-                    'file' => $presentation->name
+                    'file' => $presentation->name,
+                    'replace' => $replace
                 ]);
             } else {
                 throw new WeKastAPIException(7);

@@ -46,7 +46,7 @@ class Init extends Migration
             $table->unsignedInteger('user_id');
             $table->foreign('user_id')->references('id')->on('user');
             $table->string('name');
-            $table->unique('user_id', 'name');
+            $table->unique(['user_id', 'name']);
             $table->timestamps();
         });
     }
