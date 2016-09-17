@@ -23,6 +23,9 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 use Aloha\Twilio\Support\Laravel\Facade as Twilio;
+use SimpleXMLElement;
+use UnexpectedValueException;
+use ZipArchive;
 
 /**
  * Контроллер, обрабатывающий запросы к API
@@ -55,6 +58,7 @@ class WeKastController extends Controller
 
 
     const PRESENTATIONS_PATH = 'presentations/';
+
     const CONFIRMED_SALT = "jsd324kw23hmn43mn;";
 
     /**
@@ -184,9 +188,42 @@ class WeKastController extends Controller
 
             $file = $request->file('file');
             if ($file->isValid()) {
+
+                $name = $file->getClientOriginalName();
+
+                $info = pathinfo($name);
+                if ($info['extension'] !== 'ezs') {
+                    throw new WeKastAPIException(self::$debug ? 17 : 7);
+                }
+
+                try {
+                    $zip = new ZipArchive();
+                    $zip->open($file->getRealPath());
+                    $text = $zip->getFromName("info.xml");
+                    if ($text === false) {
+                        throw new WeKastAPIException(self::$debug ? 19 : 7);
+                    }
+                    try {
+                        $presInfo = new SimpleXMLElement($text);
+                    } catch (\Exception $e) {
+                        throw new WeKastAPIException(self::$debug ? 20 : 7, $e);
+                    }
+                    $preview = $zip->getFromName("preview.jpeg");
+                    if ($preview === false) {
+                        throw new WeKastAPIException(self::$debug ? 21 : 7);
+                    }
+
+                    $zip->close();
+                } catch (UnexpectedValueException $e) {
+                    throw new WeKastAPIException(self::$debug ? 19 : 7, $e);
+                } catch (ErrorException $e) {
+                    throw new WeKastAPIException(self::$debug ? 18 : 7, $e);
+                }
+
+
                 $presentation = new Presentation();
                 $presentation->setUser($user);
-                $presentation->name = $name = $file->getClientOriginalName();
+                $presentation->name = $name;
                 $presentation->hash = $hash = md5_file($file->getRealPath());
                 $replace = false;
                 try {
@@ -196,11 +233,16 @@ class WeKastController extends Controller
                     $presentation->hash = $hash;
                     $presentation->save();
                     Storage::delete(self::PRESENTATIONS_PATH . $presentation->id);
+                    Storage::delete(self::PRESENTATIONS_PATH . $presentation->id . 'jpeg');
                     $replace = true;
                 }
                 Storage::put(
                     self::PRESENTATIONS_PATH . $presentation->id,
                     file_get_contents($file->getRealPath())
+                );
+                Storage::put(
+                    self::PRESENTATIONS_PATH . $presentation->id . '.jpeg',
+                    $preview
                 );
                 return Response::normal([
                     'id' => $presentation->id,

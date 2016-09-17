@@ -41,6 +41,11 @@ class WeKastAPIException extends \Exception
         14 => 'Phone number not found',
         15 => 'Bad code',
         16 => 'Phone already confirmed',
+        17 => 'Invalid extension',
+        18 => 'File not a zip archive',
+        19 => 'Archive not contain info file',
+        20 => 'Info file not a valid XML',
+        21 => 'Preview not found',
     ];
 
     /**
