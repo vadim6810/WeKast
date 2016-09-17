@@ -92,6 +92,16 @@
             <button id="download" class="btn btn-default">download</button>
         </form>
         <form class="form-group">
+            <h3>Check name</h3>
+            <label for="check-login">Login:</label>
+            <input id="check-login" type="text" class="form-control">
+            <label for="check-password">Password:</label>
+            <input id="check-password" type="text" class="form-control">
+            <label for="check-name">File name:</label>
+            <input id="check-name" type="text" class="form-control">
+            <button id="check" class="btn btn-default">check</button>
+        </form>
+        <form class="form-group">
             <h3>Delete Tester</h3>
             <label for="delete-login">Login:</label>
             <input id="delete-login" type="text" class="form-control">
@@ -169,6 +179,19 @@
             };
             var id = $("#download-id").val();
             $.post("download/" + id, d, function (data) {
+                output.text(data);
+            }, "text");
+        });
+
+        $("#check").click(function (e) {
+            e.preventDefault();
+            var output = $("#output");
+            var d = {
+                login: $("#check-login").val(),
+                password: $("#check-password").val(),
+                name: $("#check-name").val()
+            };
+            $.post("check", d, function (data) {
                 output.text(data);
             }, "text");
         });

@@ -277,6 +277,20 @@ class WeKastController extends Controller
         }
     }
 
+    public function check(Request $request)
+    {
+        self::logRequest($request);
+
+        $user = self::auth($request->login, $request->password, true);
+
+        $presentation = Presentation::byUserName($user, $request->name);
+        if ($presentation) {
+            return Response::normal(['id' => $presentation]);
+        } else {
+            throw new WeKastAPIException(9);
+        }
+    }
+
     public function confirm(Request $request, $hash)
     {
         try {
