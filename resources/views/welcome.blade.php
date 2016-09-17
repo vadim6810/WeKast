@@ -89,6 +89,8 @@
             <input id="download-password" type="text" class="form-control">
             <label for="download-id">File ID:</label>
             <input id="download-id" type="text" class="form-control">
+            <label for="download-preview">Preview:</label>
+            <input id="download-preview" type="checkbox" value="1" class="form-control">
             <button id="download" class="btn btn-default">download</button>
         </form>
         <form class="form-group">
@@ -178,7 +180,14 @@
                 password: $("#download-password").val()
             };
             var id = $("#download-id").val();
-            $.post("download/" + id, d, function (data) {
+            var p = $("#download-preview")[0].checked;
+            console.log(p);
+            var url = "download/" + id;
+            if (p) {
+                url = "preview/" + id
+            }
+
+            $.post(url, d, function (data) {
                 output.text(data);
             }, "text");
         });

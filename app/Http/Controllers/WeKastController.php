@@ -319,6 +319,35 @@ class WeKastController extends Controller
         }
     }
 
+    public function preview(Request $request, $id)
+    {
+        self::logRequest($request);
+
+        $user = self::auth($request->login, $request->password, true);
+
+        try {
+            /**
+             * @var Presentation $presentation
+             */
+            $presentation = Presentation::findOrFail($id);
+            // TODO: Make with X-Accel-Redirect
+            if ($presentation->isBellongs($user)) {
+                $fileName = self::PRESENTATIONS_PATH . $presentation->id . '.jpeg';
+                $size = Storage::size($fileName);
+                return response(Storage::get($fileName))
+                    ->withHeaders([
+                        'Content-Type' => 'image/jpeg',
+                        'Content-Length' => $size,
+                        'Content-Disposition' => 'attachment; filename=' . $presentation->name . '.jpeg'
+                    ]);
+            } else {
+                throw new WeKastNoFileException(self::$debug ? 8 : 9);
+            }
+        } catch (ModelNotFoundException $e) {
+            throw new WeKastNoFileException(9, $e);
+        }
+    }
+
     public function check(Request $request)
     {
         self::logRequest($request);

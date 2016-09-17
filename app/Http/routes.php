@@ -29,6 +29,8 @@ Route::post('/upload', "WeKastController@upload");
 
 Route::post('/download/{id}', "WeKastController@download");
 
+Route::post('/preview/{id}', "WeKastController@preview");
+
 Route::post('/check', "WeKastController@check");
 
 Route::get('/confirm/{hash}', "WeKastController@confirm");
