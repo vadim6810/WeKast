@@ -356,7 +356,7 @@ class WeKastController extends Controller
 
         $presentation = Presentation::byUserName($user, $request->name);
         if ($presentation) {
-            return Response::normal(['id' => $presentation]);
+            return Response::normal($presentation);
         } else {
             throw new WeKastAPIException(9);
         }
