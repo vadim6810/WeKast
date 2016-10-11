@@ -134,6 +134,19 @@
             <input id="phone-sms" type="text" class="form-control">
             <button id="request" class="btn btn-default">Request</button>
         </form>
+
+        <form class="form-group">
+            <h3>Change order</h3>
+            <label for="change-login">Login:</label>
+            <input id="change-login" type="text" class="form-control">
+            <label for="change-password">Password:</label>
+            <input id="change-password" type="text" class="form-control">
+            <label for="change-id">File ID:</label>
+            <input id="change-id" type="text" class="form-control">
+            <label for="slide_order">Order:</label>
+            <input id="slide_order" type="text" class="form-control">
+            <button id="change" class="btn btn-default">Edit</button>
+        </form>
         <div id="output">Output...</div>
     </div>
 </div>
@@ -214,6 +227,20 @@
             };
             var id = $("#delete-id").val();
             $.post("delete/" + id, d, function (data) {
+                output.text(data);
+            }, "text");
+        });
+
+        $("#change").click(function (e) {
+            e.preventDefault();
+            var output = $("#output");
+            var d = {
+                login: $("#change-login").val(),
+                password: $("#change-password").val(),
+                slide_order: $("#slide_order").val(),
+            };
+            var id = $("#change-id").val();
+            $.post("edit/" + id, d, function (data) {
                 output.text(data);
             }, "text");
         });

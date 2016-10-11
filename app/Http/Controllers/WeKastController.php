@@ -348,6 +348,57 @@ class WeKastController extends Controller
         }
     }
 
+    public function edit (Request $request, $id) {
+        self::logRequest($request);
+        $user = self::auth($request->login, $request->password, true);
+        try {
+            /**
+             * @var Presentation $presentation
+             */
+            $presentation = Presentation::findOrFail($id);
+            if ($presentation->isBellongs($user)) {
+                $fileName = self::PRESENTATIONS_PATH . $presentation->id;
+                //$size = Storage::size($fileName);
+                try {
+                    $tmpDir = sys_get_temp_dir();
+                    $tmpFileName = tempnam($tmpDir, 'ezs_');
+                    $file = fopen($tmpFileName, 'w');
+                    fwrite($file, Storage::get($fileName));
+                    fclose($file);
+                    $zip = new ZipArchive();
+                    $zip->open($tmpFileName, ZipArchive::CREATE);
+
+                    $text = $zip->getFromName("info.xml");
+                    if ($text === false) {
+                        throw new WeKastAPIException(self::$debug ? 19 : 7);
+                    }
+
+                    $presInfo = new SimpleXMLElement($text);
+                    $presInfo->order = $request->slide_order;
+
+                    $zip->addFromString("info.xml", $presInfo->asXML());
+                    $zip->close();
+
+                    Storage::put($fileName, file_get_contents($tmpFileName));
+
+                    return Response::normal(true);
+                } catch (\Exception $e) {
+                    throw new WeKastAPIException(self::$debug ? 20 : 7, $e);
+                } finally {
+                    if (!empty($tmpFileName) && file_exists($tmpFileName)) {
+                        try {
+                            unlink($tmpFileName);
+                        } catch (ErrorException $ignored) {}
+                    }
+                }
+            } else {
+                throw new WeKastAPIException(self::$debug ? 8 : 9);
+            }
+        } catch (ModelNotFoundException $e) {
+            throw new WeKastAPIException(9, $e);
+        }
+    }
+
     public function check(Request $request)
     {
         self::logRequest($request);

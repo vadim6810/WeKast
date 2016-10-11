@@ -31,6 +31,8 @@ Route::post('/download/{id}', "WeKastController@download");
 
 Route::post('/preview/{id}', "WeKastController@preview");
 
+Route::post('/edit/{id}', "WeKastController@edit");
+
 Route::post('/check', "WeKastController@check");
 
 Route::get('/confirm/{hash}', "WeKastController@confirm");
