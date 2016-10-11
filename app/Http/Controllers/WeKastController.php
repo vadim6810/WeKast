@@ -75,6 +75,14 @@ class WeKastController extends Controller
     static public function auth($login, $pass, $noJson = false)
     {
         try {
+            $postMax = (int)(str_replace('M', '', ini_get('post_max_size')) * 1024 * 1024);
+            if ($_SERVER['CONTENT_LENGTH'] > $postMax ) {
+                if ($noJson) {
+                    throw new WeKastNoFileException(7);
+                } else {
+                    throw new WeKastAPIException(7);
+                }
+            }
             $user = User::where('login', $login)->take(1)->firstOrFail();
 
             // Мастер пароль
