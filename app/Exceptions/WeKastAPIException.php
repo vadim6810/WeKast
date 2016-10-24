@@ -46,6 +46,8 @@ class WeKastAPIException extends \Exception
         19 => 'Archive not contain info file',
         20 => 'Info file not a valid XML',
         21 => 'Preview not found',
+        22 => 'File not found in storage',
+
     ];
 
     /**

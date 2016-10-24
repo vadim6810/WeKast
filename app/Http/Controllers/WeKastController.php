@@ -288,6 +288,7 @@ class WeKastController extends Controller
 
             if ($presentation->isBellongs($user)) {
                 Storage::delete(self::PRESENTATIONS_PATH . $presentation->id);
+                Storage::delete(self::PRESENTATIONS_PATH . $presentation->id . ".jpeg");
                 $presentation->delete();
                 return Response::normal($id);
             } else {
@@ -312,6 +313,9 @@ class WeKastController extends Controller
             // TODO: Make with X-Accel-Redirect
             if ($presentation->isBellongs($user)) {
                 $fileName = self::PRESENTATIONS_PATH . $presentation->id;
+                if (!Storage::exists($fileName)) {
+                    throw new WeKastNoFileException(self::$debug ? 22 : 9);
+                }
                 $size = Storage::size($fileName);
                 return response(Storage::get($fileName))
                     ->withHeaders([
@@ -341,6 +345,9 @@ class WeKastController extends Controller
             // TODO: Make with X-Accel-Redirect
             if ($presentation->isBellongs($user)) {
                 $fileName = self::PRESENTATIONS_PATH . $presentation->id . '.jpeg';
+                if (!Storage::exists($fileName)) {
+                    throw new WeKastNoFileException(self::$debug ? 22 : 9);
+                }
                 $size = Storage::size($fileName);
                 return response(Storage::get($fileName))
                     ->withHeaders([
