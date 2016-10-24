@@ -47,6 +47,8 @@ class Init extends Migration
             $table->foreign('user_id')->references('id')->on('user');
             $table->string('name');
             $table->string('hash', 32);
+            $table->integer('size');
+            $table->string('type');
             $table->unique(['user_id', 'name']);
             $table->timestamps();
         });

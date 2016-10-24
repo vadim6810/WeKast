@@ -233,6 +233,8 @@ class WeKastController extends Controller
                 $presentation->setUser($user);
                 $presentation->name = $name;
                 $presentation->hash = $hash = md5_file($file->getRealPath());
+                $presentation->size = filesize($file->getRealPath());
+                $presentation->type = "unknown";
                 $replace = false;
                 try {
                     $presentation->save();
@@ -397,6 +399,7 @@ class WeKastController extends Controller
 
                     $presentation->updated_at = date("Y-m-d H:i:s");
                     $presentation->hash = md5_file($tmpFileName);
+                    $presentation->size = filesize($tmpFileName);
                     $presentation->save();
 
                     Storage::put($fileName, file_get_contents($tmpFileName));
