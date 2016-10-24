@@ -239,6 +239,7 @@ class WeKastController extends Controller
                 } catch (QueryException $e) {
                     $presentation = Presentation::byUserName($user, $name);
                     $presentation->hash = $hash;
+                    $presentation->updated_at = date("Y-m-d H:i:s");
                     $presentation->save();
                     Storage::delete(self::PRESENTATIONS_PATH . $presentation->id);
                     Storage::delete(self::PRESENTATIONS_PATH . $presentation->id . 'jpeg');
@@ -393,6 +394,10 @@ class WeKastController extends Controller
 
                     $zip->addFromString("info.xml", $presInfo->asXML());
                     $zip->close();
+
+                    $presentation->updated_at = date("Y-m-d H:i:s");
+                    $presentation->hash = md5_file($tmpFileName);
+                    $presentation->save();
 
                     Storage::put($fileName, file_get_contents($tmpFileName));
 
