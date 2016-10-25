@@ -213,6 +213,10 @@ class WeKastController extends Controller
                     }
                     try {
                         $presInfo = new SimpleXMLElement($text);
+                        $type = $presInfo->attributes()->type;
+                        if (empty($type)) {
+                            $type = 'unknown';
+                        }
                     } catch (\Exception $e) {
                         throw new WeKastAPIException(self::$debug ? 20 : 7, $e);
                     }
@@ -233,8 +237,8 @@ class WeKastController extends Controller
                 $presentation->setUser($user);
                 $presentation->name = $name;
                 $presentation->hash = $hash = md5_file($file->getRealPath());
-                $presentation->size = filesize($file->getRealPath());
-                $presentation->type = "unknown";
+                $presentation->size = $size = filesize($file->getRealPath());
+                $presentation->type = $type;
                 $replace = false;
                 try {
                     $presentation->save();
@@ -242,6 +246,8 @@ class WeKastController extends Controller
                     $presentation = Presentation::byUserName($user, $name);
                     $presentation->hash = $hash;
                     $presentation->updated_at = date("Y-m-d H:i:s");
+                    $presentation->size = $size;
+                    $presentation->type = $type;
                     $presentation->save();
                     Storage::delete(self::PRESENTATIONS_PATH . $presentation->id);
                     Storage::delete(self::PRESENTATIONS_PATH . $presentation->id . 'jpeg');
