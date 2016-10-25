@@ -456,6 +456,7 @@ class WeKastController extends Controller
             if ($user->confirmed === null) {
                 $password = str_random(8);
                 $user->password = Hash::make($password);
+                $user->save();
                 $data = ['login' => $user->login, 'password' => $password];
                 Mail::send('emails.remind', $data, function ($m) use ($user) {
                     $m->from(env('MAIL_FROM'), 'WeKat Password Reminder');
