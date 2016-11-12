@@ -23,6 +23,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 use Aloha\Twilio\Support\Laravel\Facade as Twilio;
+use Services_Twilio_RestException;
 use SimpleXMLElement;
 use UnexpectedValueException;
 use ZipArchive;
@@ -175,7 +176,12 @@ class WeKastController extends Controller
                 });
                 $phone = '+' . $user->login;
                 $message = 'WeKast: Phone confirm code is ' . $user->code;
-                Twilio::message($phone, $message);
+
+                try {
+                    Twilio::message($phone, $message);
+                } catch (Services_Twilio_RestException $e) {
+                    Log::alert("Twilio error: " . $e->getMessage());
+                }
             }
 
             return Response::normal([
