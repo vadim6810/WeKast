@@ -201,7 +201,7 @@ class WeKastController extends Controller
             $user = self::auth($request->login, $request->password);
 
             $file = $request->file('file');
-            if ($file->isValid()) {
+            if (!empty($file) && $file->isValid()) {
 
                 $name = $file->getClientOriginalName();
 
