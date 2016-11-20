@@ -4,11 +4,12 @@ namespace App\Exceptions;
 
 use App\Http\Responses\Response;
 use Exception;
-use Illuminate\Validation\ValidationException;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Symfony\Component\HttpKernel\Exception\HttpException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Validation\ValidationException;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 
 class Handler extends ExceptionHandler
 {
@@ -29,19 +30,23 @@ class Handler extends ExceptionHandler
      *
      * This is a great spot to send exceptions to Sentry, Bugsnag, etc.
      *
-     * @param  \Exception  $e
+     * @param  \Exception $e
      * @return void
      */
     public function report(Exception $e)
     {
-        parent::report($e);
+        if ($e instanceof WeKastAPIException) {
+            Log::error('[' . $e->getCode() . '] "' . $e->getMessage() . '" in ' . $e->getTrace()[0]['file'] . ':' . $e->getTrace()[0]['line']);
+        } else {
+            parent::report($e);
+        }
     }
 
     /**
      * Render an exception into an HTTP response.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \Exception  $e
+     * @param  \Illuminate\Http\Request $request
+     * @param  \Exception $e
      * @return \Illuminate\Http\JsonResponse
      */
     public function render($request, Exception $e)
