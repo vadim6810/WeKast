@@ -36,7 +36,10 @@ class Handler extends ExceptionHandler
     public function report(Exception $e)
     {
         if ($e instanceof WeKastAPIException) {
-            Log::error('[' . $e->getCode() . '] "' . $e->getMessage() . '" in ' . $e->getTrace()[0]['file'] . ':' . $e->getTrace()[0]['line']);
+            Log::error('[' . $e->getCode() . '] "' . $e->getMessage() . '" in '
+                . (isset($e->getTrace()[0]['file'])
+                    ? $e->getTrace()[0]['file'] . ':' . $e->getTrace()[0]['line']
+                    : "nofile"));
         } else {
             parent::report($e);
         }
