@@ -90,6 +90,18 @@
             <button id="settings" class="btn btn-default">Get settings</button>
         </form>
         <form class="form-group">
+            <h3>Settings set Tester</h3>
+            <label for="settings-set-login">Login:</label>
+            <input id="settings-set-login" type="text" class="form-control">
+            <label for="settings-set-password">Password:</label>
+            <input id="settings-set-password" type="text" class="form-control">
+            <label for="settings-set-login">Sid:</label>
+            <input id="settings-set-sid" type="text" class="form-control">
+            <label for="settings-set-pass">Wifi password:</label>
+            <input id="settings-set-pass" type="text" class="form-control">
+            <button id="settings-set" class="btn btn-default">Set settings</button>
+        </form>
+        <form class="form-group">
             <h3>Download Tester</h3>
             <label for="download-login">Login:</label>
             <input id="download-login" type="text" class="form-control">
@@ -201,6 +213,20 @@
                 password: $("#settings-password").val()
             };
             $.post("settings", d, function (data) {
+                output.text(data);
+            }, "text");
+        });
+
+        $("#settings-set").click(function (e) {
+            e.preventDefault();
+            var output = $("#output");
+            var d = {
+                login: $("#settings-set-login").val(),
+                password: $("#settings-set-password").val(),
+                sid: $("#settings-set-sid").val(),
+                pass: $("#settings-set-pass").val()
+            };
+            $.post("settings/set", d, function (data) {
                 output.text(data);
             }, "text");
         });

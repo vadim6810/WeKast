@@ -457,6 +457,16 @@ class WeKastController extends Controller
         return Response::normal(['sid' => $user->sid, 'pass' => $user->pass]);
     }
 
+    public function setSettings(Request $request)
+    {
+        self::logRequest($request);
+        $user = self::auth($request->login, $request->password, true);
+        $user->sid = $request->sid;
+        $user->pass = $request->pass;
+        $user->save();
+        return Response::normal(true);
+    }
+
     public function confirm(Request $request, $hash)
     {
         try {
