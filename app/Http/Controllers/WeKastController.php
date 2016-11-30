@@ -450,6 +450,13 @@ class WeKastController extends Controller
         }
     }
 
+    public function settings(Request $request)
+    {
+        self::logRequest($request);
+        $user = self::auth($request->login, $request->password, true);
+        return Response::normal(['sid' => $user->sid, 'pass' => $user->pass]);
+    }
+
     public function confirm(Request $request, $hash)
     {
         try {

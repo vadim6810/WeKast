@@ -82,6 +82,14 @@
             <button id="list" class="btn btn-default">Get list</button>
         </form>
         <form class="form-group">
+            <h3>Settings get Tester</h3>
+            <label for="settings-login">Login:</label>
+            <input id="settings-login" type="text" class="form-control">
+            <label for="settings-password">Password:</label>
+            <input id="settings-password" type="text" class="form-control">
+            <button id="settings" class="btn btn-default">Get settings</button>
+        </form>
+        <form class="form-group">
             <h3>Download Tester</h3>
             <label for="download-login">Login:</label>
             <input id="download-login" type="text" class="form-control">
@@ -181,6 +189,18 @@
             };
             var page = $("#page").val();
             $.post("list/" + page, d, function (data) {
+                output.text(data);
+            }, "text");
+        });
+
+        $("#settings").click(function (e) {
+            e.preventDefault();
+            var output = $("#output");
+            var d = {
+                login: $("#settings-login").val(),
+                password: $("#settings-password").val()
+            };
+            $.post("settings", d, function (data) {
                 output.text(data);
             }, "text");
         });
