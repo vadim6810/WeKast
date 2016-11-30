@@ -1,5 +1,4 @@
 <?php
-
 /*
 |--------------------------------------------------------------------------
 | Application Routes
@@ -44,3 +43,7 @@ Route::post('/request', "WeKastController@request");
 Route::post('/reset', "WeKastController@reset");
 
 Route::post('/delete/{id}', "WeKastController@remove");
+
+Route::post('/settings', "WeKastController@settings");
+
+Route::post('/settings/set', "WeKastController@setSettings");

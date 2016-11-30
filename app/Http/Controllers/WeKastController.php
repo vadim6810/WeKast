@@ -8,6 +8,7 @@
 
 namespace App\Http\Controllers;
 
+use Aloha\Twilio\Support\Laravel\Facade as Twilio;
 use App\Exceptions\WeKastAPIException;
 use App\Exceptions\WeKastDuplicateException;
 use App\Exceptions\WeKastNoFileException;
@@ -22,7 +23,6 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
-use Aloha\Twilio\Support\Laravel\Facade as Twilio;
 use Services_Twilio_RestException;
 use SimpleXMLElement;
 use UnexpectedValueException;
@@ -77,7 +77,7 @@ class WeKastController extends Controller
     {
         try {
             $postMax = (int)(str_replace('M', '', ini_get('post_max_size')) * 1024 * 1024);
-            if ($_SERVER['CONTENT_LENGTH'] > $postMax ) {
+            if ($_SERVER['CONTENT_LENGTH'] > $postMax) {
                 if ($noJson) {
                     throw new WeKastNoFileException(7);
                 } else {
@@ -378,7 +378,8 @@ class WeKastController extends Controller
         }
     }
 
-    public function edit (Request $request, $id) {
+    public function edit(Request $request, $id)
+    {
         self::logRequest($request);
         $user = self::auth($request->login, $request->password, true);
         try {
@@ -423,7 +424,8 @@ class WeKastController extends Controller
                     if (!empty($tmpFileName) && file_exists($tmpFileName)) {
                         try {
                             unlink($tmpFileName);
-                        } catch (ErrorException $ignored) {}
+                        } catch (ErrorException $ignored) {
+                        }
                     }
                 }
             } else {
@@ -460,7 +462,8 @@ class WeKastController extends Controller
         }
     }
 
-    public function reset(Request $request) {
+    public function reset(Request $request)
+    {
         self::logRequest($request);
         $answer = "OK";
         try {
@@ -484,7 +487,8 @@ class WeKastController extends Controller
         return Response::normal(self::$debug ? $answer : "Ok");
     }
 
-    public function code(Request $request) {
+    public function code(Request $request)
+    {
         try {
             $login = $request->input('login');
             $code = $request->input('code');
@@ -504,7 +508,8 @@ class WeKastController extends Controller
         }
     }
 
-    public function request(Request $request) {
+    public function request(Request $request)
+    {
         $answer = "OK";
         try {
             $login = $request->input('login');
@@ -526,7 +531,8 @@ class WeKastController extends Controller
      * TODO: move to middleware
      * @param Request $r
      */
-    public static function logRequest(Request $r) {
+    public static function logRequest(Request $r)
+    {
         if (self::$debug) {
             Log::info("[" . $r->header('User-Agent') . "]: /" . $r->path() . " " . json_encode($r->all()));
         }
