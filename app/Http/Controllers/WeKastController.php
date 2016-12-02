@@ -293,7 +293,7 @@ class WeKastController extends Controller
     {
         self::logRequest($request);
 
-        $user = self::auth($request->login, $request->password, true);
+        $user = self::auth($request->login, $request->password);
 
         try {
             /**
@@ -381,7 +381,7 @@ class WeKastController extends Controller
     public function edit(Request $request, $id)
     {
         self::logRequest($request);
-        $user = self::auth($request->login, $request->password, true);
+        $user = self::auth($request->login, $request->password);
         try {
             /**
              * @var Presentation $presentation
@@ -440,7 +440,7 @@ class WeKastController extends Controller
     {
         self::logRequest($request);
 
-        $user = self::auth($request->login, $request->password, true);
+        $user = self::auth($request->login, $request->password);
 
         $presentation = Presentation::byUserName($user, $request->name);
         if ($presentation) {
@@ -453,14 +453,14 @@ class WeKastController extends Controller
     public function settings(Request $request)
     {
         self::logRequest($request);
-        $user = self::auth($request->login, $request->password, true);
+        $user = self::auth($request->login, $request->password);
         return Response::normal(['sid' => $user->sid, 'pass' => $user->pass]);
     }
 
     public function setSettings(Request $request)
     {
         self::logRequest($request);
-        $user = self::auth($request->login, $request->password, true);
+        $user = self::auth($request->login, $request->password);
         $user->sid = $request->sid;
         $user->pass = $request->pass;
         $user->save();
